@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,6 +18,9 @@
 </head>
 <body class="bg-gray-100">
     <header class="flex justify-between items-center p-4 bg-gray-800 text-white">
+        <div>
+            <img src="{% static 'img/logo.png' %}" class="h-8 w-16" alt="SSN Logo">
+        </div>
         <div>
             <h1 class="text-lg font-bold">Shape 2024</h1>
         </div>
