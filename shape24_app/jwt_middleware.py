@@ -10,7 +10,8 @@ class JWTMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
-        if request.path in settings.JWT_MIDDLEWARE_EXCLUDED_PATHS:
+        
+        if request.path in settings.JWT_MIDDLEWARE_EXCLUDED_PATHS or  "/checkavail" in request.path:
             return self.get_response(request)
 
         jwt_token = request.session.get("jwt-token", None)
@@ -50,7 +51,7 @@ def check_jwt(decoded_jwt, _id):
         return False
 
     user_object = user_object[0]
-    
+
     user_email = user_object.email
 
     if not user_email:
@@ -58,8 +59,7 @@ def check_jwt(decoded_jwt, _id):
 
     hashed_email = str(hashlib.sha256(user_email.encode("utf-8")).hexdigest())
 
-
     if hashed_email == email:
         return True
-    
+
     return False
