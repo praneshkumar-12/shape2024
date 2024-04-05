@@ -91,4 +91,4 @@ def login(request):
     return render(request, "index.html", {"alertmessage": "Invalid credentials!"})
 
 def dashboard(request):
-    return HttpResponse("Hello")
+    return render(request, "dashboard.html")
