@@ -22,7 +22,7 @@
             <img src="{% static 'img/logo.png' %}" class="h-8 w-16" alt="SSN Logo">
         </div>
         <div>
-            <h1 class="text-lg font-bold">Shape 2024</h1>
+            <h1 class="text-3xl font-bold">Shape 2024</h1>
         </div>
         <div>
             <button class="btn btn-danger">Logout</button>
@@ -30,28 +30,21 @@
     </header>
 
     <main class="p-4">
+        {% for project in projects %}
         <div class="mb-4">
             <div class="p-4 border-b border-gray-300">
-                <h2 class="text-lg font-semibold">Project 1</h2>
-                <p class="text-green-600">Available (2/2)</p>
+                <h2 class="text-lg font-semibold">{{ project.project_title }}</h2>
+                {% if project.availability > 0 %}
+                <p class="text-green-600">Available ({{ project.availability }}/2)</p>
+                {% else %}
+                <p class="text-red-600">Not Available ({{ project.availability }}/2)</p>
+                {% endif %}
                 <div>
                     <button class="btn btn-primary mr-2">Check Availability</button>
-                    <button class="btn btn-success" data-toggle="modal" data-target="#exampleModal1">Select Project</button>
+                    <button class="btn btn-success" data-toggle="modal" data-target="#exampleModal{{ project.project_id }}">Select Project</button>
                 </div>
             </div>
         </div>
-
-        <div class="mb-4">
-            <div class="p-4 border-b border-gray-300">
-                <h2 class="text-lg font-semibold">Project 2</h2>
-                <p class="text-red-600">Not Available (0/2)</p>
-                <div>
-                    <button class="btn btn-primary mr-2">Check Availability</button>
-                    <button class="btn btn-success" data-toggle="modal" data-target="#exampleModal2">Select Project</button>
-                </div>
-            </div>
-        </div>
-    </main>
 
     <!-- Bootstrap Modal -->
     <div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -72,7 +65,7 @@
         </div>
     </div>
 
-    <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="exampleModal{{ project.project_id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -80,7 +73,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    Are you sure you want to select this project 2?
+                    Are you sure you want to select {{ project.project_title }}?
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -89,6 +82,8 @@
             </div>
         </div>
     </div>
+    {% endfor %}
+    </main>
 
     <!-- Bootstrap JavaScript Bundle with Popper -->
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
