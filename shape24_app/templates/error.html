@@ -1,0 +1,11 @@
+{% if error_title %}
+    <h1> {{ error_title }} </h1>
+{% else %}
+    <h1> Some error occurred! </h1>
+{% endif %}
+
+{% if error_message %}
+    <h1> {{ error_message }} </h1>
+{% else %}
+    <h1> Uh-Oh! Sorry, something unexpected happened! </h1>
+{% endif %}
