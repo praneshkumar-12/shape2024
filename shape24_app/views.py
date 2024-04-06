@@ -47,10 +47,12 @@ def bypass_login_check(request):
 def is_already_selected(request):
     user_id = request.session["_id"]
 
-    assigned_project = AssignedProjects.objects.get(user=user_id)
+    assigned_project = AssignedProjects.objects.filter(user=user_id)
 
     if not assigned_project:
         return False
+    
+    assigned_project = assigned_project[0]
     
     return True
 
@@ -180,10 +182,12 @@ def confirm_project(request):
 def view_selected_project(request):
     user_id = request.session["_id"]
 
-    assigned_project = AssignedProjects.objects.get(user=user_id)
+    assigned_project = AssignedProjects.objects.filter(user=user_id)
 
     if not assigned_project:
         return redirect("/dashboard/")
+    
+    assigned_project = assigned_project[0]
     
     project = Projects.objects.get(project_id=assigned_project.project.project_id)
     
