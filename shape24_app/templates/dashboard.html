@@ -29,6 +29,9 @@
         </header>
         <main class="p-4">
             <input type="text" class="form-control mb-3" id="searchBox" placeholder="Search..." oninput="filterProjects()">
+            <div class="d-flex justify-content-end align-items-end">
+                <button class="btn btn-info" onclick="refreshAvailabilities()"> Refresh availabilities </button>
+            </div>
             {% for project in projects %}
             <div class="mb-4 project-item">
                 <div class="p-4 border-b border-gray-300" id="{{ project.project_id }}">
@@ -217,6 +220,11 @@
                 
             }
             
+            function refreshAvailabilities(){
+                {% for project in projects %}
+                    checkAvailability("{{ project.project_id }}");
+                {% endfor %}
+            }
         </script>
     </body>
 </html>
