@@ -30,7 +30,7 @@
         <main class="p-4">
             <input type="text" class="form-control mb-3" id="searchBox" placeholder="Search..." oninput="filterProjects()">
             <div class="d-flex justify-content-end align-items-end">
-                <button class="btn btn-info" onclick="refreshAvailabilities()"> Refresh availabilities </button>
+                <button class="btn btn-info" id="refreshAvailabilitiesBtn" onclick="refreshAvailabilities()"> Refresh Availabilities </button>
             </div>
             {% for project in projects %}
             <div class="mb-4 project-item">
@@ -71,13 +71,14 @@
                 </div>
             </div>
             {% endfor %}
-            <div class="text-center mt-3">
-                <div style="background-color: #f82249; width: 30px; height: 30px; border-radius: 50%; display: inline-flex; justify-content: center; align-items: center;">
-                    <span class="scroll-arrow" onclick="scrollToTop()" style="color: white; cursor: pointer;">▲</span>
-                </div>
-                <div style="color: #f82249;">Back to Top</div>
-            </div>
+            
         </main>
+        <div class="text-center mt-3">
+            <div style="background-color: #f82249; width: 30px; height: 30px; border-radius: 50%; display: inline-flex; justify-content: center; align-items: center;">
+                <span class="scroll-arrow" onclick="scrollToTop()" style="color: white; cursor: pointer;">▲</span>
+            </div>
+            <div style="color: #f82249;">Back to Top</div>
+        </div>
         <!-- Bootstrap JavaScript Bundle with Popper -->
         <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
@@ -225,6 +226,48 @@
                     checkAvailability("{{ project.project_id }}");
                 {% endfor %}
             }
+
+            document.addEventListener("DOMContentLoaded", function() {
+    document.getElementById("refreshAvailabilitiesBtn").addEventListener("click", function() {
+        sortProjectsByAvailability();
+    });
+});
+
+function sortProjectsByAvailability() {
+    var projectItems = document.querySelectorAll(".project-item");
+
+    var availableProjects = [];
+    var unavailableProjects = [];
+
+    // Iterate through project items and separate them based on availability
+    projectItems.forEach(function(project) {
+        var availabilityText = project.querySelector("p");
+        if (availabilityText.classList.contains("text-green-600")) {
+            availableProjects.push(project);
+        } else {
+            unavailableProjects.push(project);
+        }
+    });
+
+    // Create a container to hold the sorted projects
+    var projectContainer = document.createElement("div");
+
+    // Append available projects first
+    availableProjects.forEach(function(project) {
+        projectContainer.appendChild(project);
+    });
+
+    // Append unavailable projects after available ones
+    unavailableProjects.forEach(function(project) {
+        projectContainer.appendChild(project);
+    });
+
+    // Append the sorted projects to the main element
+    var mainElement = document.querySelector("main");
+    mainElement.appendChild(projectContainer);
+}
+
+
         </script>
     </body>
 </html>
