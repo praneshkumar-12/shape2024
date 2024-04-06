@@ -26,10 +26,11 @@ class Projects(models.Model):
 
 
 class AssignedProjects(models.Model):
-    user = models.OneToOneField("Users", models.DO_NOTHING)
+    user = models.OneToOneField("Users", models.DO_NOTHING, primary_key=True)
     project = models.ForeignKey("Projects", models.DO_NOTHING)
 
     class Meta:
         managed = False
         db_table = "assigned_projects"
         unique_together = (("user", "project"),)
+

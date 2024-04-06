@@ -3,6 +3,7 @@ from django.conf import settings
 from django.http import HttpResponse
 from shape24_app.models import Users
 from shape24_app.models import Projects
+from shape24_app.models import AssignedProjects
 import hashlib
 import datetime
 import jwt
@@ -43,6 +44,17 @@ def bypass_login_check(request):
     return False
 
 
+def is_already_selected(request):
+    user_id = request.session["_id"]
+
+    assigned_project = AssignedProjects.objects.get(user=user_id)
+
+    if not assigned_project:
+        return False
+    
+    return True
+
+
 def login(request):
     if request.method == "GET":
         try:
@@ -52,6 +64,8 @@ def login(request):
                 if not bypass_login_check(request):
                     return render(request, "index.html")
                 else:
+                    if is_already_selected(request):
+                        return redirect("/view_selected_project/")
                     return redirect("/dashboard/")
         except:
             return render(request, "index.html")
@@ -98,6 +112,10 @@ def login(request):
 
 def dashboard(request):
     if request.method == "GET":
+
+        if is_already_selected(request):
+            return redirect("/view_selected_project/")
+
         projects = Projects.objects.all()
 
         projects_list = []
@@ -109,7 +127,7 @@ def dashboard(request):
         
         random.shuffle(projects_list)
 
-    return render(request, "dashboard.html", {"projects": projects_list})
+        return render(request, "dashboard.html", {"projects": projects_list, "user_id": request.session["_id"]})
 
 def check_availability(request, project_id):
     if request.method == "GET":
@@ -119,3 +137,58 @@ def check_availability(request, project_id):
             return HttpResponse(0)
         else:
             return HttpResponse(project[0].availability)
+
+def confirm_project(request):
+    if request.method == "POST":
+        user_id = request.POST.get("user_id")
+        project_id = request.POST.get("project_id")
+
+        if str(request.session['_id']) != str(user_id):
+            return HttpResponse("Unauthorized", status=401)
+
+        existing_user = AssignedProjects.objects.filter(user_id=user_id)
+
+        if existing_user:
+            return HttpResponse("Already selected!", status=409)
+        
+        existing_project = Projects.objects.filter(project_id=project_id)
+
+        if not existing_project:
+            return HttpResponse("Project not found!", status=404)
+        
+        existing_project = existing_project[0]
+
+        if existing_project.availability <= 0:
+            return HttpResponse("Project unavailable!", status=409)
+        
+        existing_project.availability = existing_project.availability - 1
+        existing_project.save()
+
+        user = Users.objects.filter(user_id=user_id)
+
+        if not user:
+            return HttpResponse("User not found!", status=404)
+        
+        user = user[0]
+
+        assigned_project = AssignedProjects.objects.create(user=user, project=existing_project)
+
+        return HttpResponse("OK", status=200)
+
+    return HttpResponse("Bad Request", status=400)
+
+def view_selected_project(request):
+    user_id = request.session["_id"]
+
+    assigned_project = AssignedProjects.objects.get(user=user_id)
+
+    if not assigned_project:
+        return redirect("/dashboard/")
+    
+    project = Projects.objects.get(project_id=assigned_project.project.project_id)
+    
+    return render(request, "result.html", {"project": project.project_title})
+
+def logout(request):
+    request.session.clear()
+    return redirect("/login/")

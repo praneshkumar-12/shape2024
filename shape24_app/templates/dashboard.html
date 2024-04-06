@@ -1,216 +1,222 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shape 2024</title>
-    <!-- Tailwind CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <style>
-        .modal-backdrop {
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Shape 2024</title>
+        <!-- Tailwind CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <style>
+            .modal-backdrop {
             background-color: rgba(0, 0, 0, 0.5);
-        }
-    </style>
-</head>
-<body class="bg-gray-100">
-    <header class="flex justify-between items-center p-4 bg-gray-800 text-white">
-        <div>
-            <img src="{% static 'img/logo.png' %}" class="h-8 w-16" alt="SSN Logo">
-        </div>
-        <div>
-            <h1 class="text-3xl font-bold">Shape 2024</h1>
-        </div>
-        <div>
-            <button class="btn btn-danger">Logout</button>
-        </div>
-    </header>
-
-    <!-- <main class="p-4">
-        <input type="text" class="form-control mb-3" id="searchBox" placeholder="Search..." oninput="filterProjects()">
-        {% for project in projects %}
-        <div class="mb-4 project-item">
-            <div class="p-4 border-b border-gray-300">
-                <h2 class="text-lg font-semibold">{{ project.project_title }}</h2>
-                {% if project.availability > 0 %}
-                <p class="text-green-600">Available ({{ project.availability }}/2)</p>
-                {% else %}
-                <p class="text-red-600">Not Available ({{ project.availability }}/2)</p>
-                {% endif %}
-                <div>
-                    <button class="btn btn-primary mr-2">Check Availability</button>
-                    <button class="btn btn-success" data-toggle="modal" data-target="#exampleModal{{ project.project_id }}">Select Project</button>
-                </div>
+            }
+        </style>
+    </head>
+    <body class="bg-gray-100">
+        <header class="flex justify-between items-center p-4 bg-gray-800 text-white">
+            <div>
+                <img src="{% static 'img/logo.png' %}" class="h-8 w-16" alt="SSN Logo">
             </div>
-        </div>
-        
-
-    <div class="modal fade" id="exampleModal{{ project.project_id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    Are you sure you want to select {{ project.project_title }}?
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Confirm</button>
-                </div>
+            <div>
+                <h1 class="text-3xl font-bold">Shape 2024</h1>
             </div>
-        </div>
-    </div>
-    {% endfor %}
-    <div class="text-center mt-3">
-        <div style="background-color: #f82249; width: 30px; height: 30px; border-radius: 50%; display: inline-flex; justify-content: center; align-items: center;">
-            <span class="scroll-arrow" onclick="scrollToTop()" style="color: white;">▲</span>
-        </div>
-        <div style="color: #f82249;">Back to Top</div>
-    </div>
-    </main> -->
-
-    <main class="p-4">
-        <input type="text" class="form-control mb-3" id="searchBox" placeholder="Search..." oninput="filterProjects()">
-        {% for project in projects %}
-        <div class="mb-4 project-item">
-            <div class="p-4 border-b border-gray-300" id="{{ project.project_id }}">
-                <h2 class="text-lg font-semibold">{{ project.project_title }}</h2>
-                {% if project.availability > 0 %}
-                <p id="avail-{{ project.project_id }}" class="text-green-600">Available ({{ project.availability }}/2)</p>
-                {% else %}
-                <p id="avail-{{ project.project_id }}" class="text-red-600">Not Available ({{ project.availability }}/2)</p>
-                {% endif %}
-                <div>
-                    <button class="btn btn-primary mr-2" id="btn-{{ project.project_id }}" value="{{ project.project_id }}" onclick="checkAvailability(this.value)">
+            <div>
+                <a href="/logout" class="btn btn-danger">Logout</a>
+            </div>
+        </header>
+        <main class="p-4">
+            <input type="text" class="form-control mb-3" id="searchBox" placeholder="Search..." oninput="filterProjects()">
+            {% for project in projects %}
+            <div class="mb-4 project-item">
+                <div class="p-4 border-b border-gray-300" id="{{ project.project_id }}">
+                    <h2 class="text-lg font-semibold">{{ project.project_title }}</h2>
+                    {% if project.availability > 0 %}
+                    <p id="avail-{{ project.project_id }}" class="text-green-600">Available ({{ project.availability }}/2)</p>
+                    {% else %}
+                    <p id="avail-{{ project.project_id }}" class="text-red-600">Not Available ({{ project.availability }}/2)</p>
+                    {% endif %}
+                    <div>
+                        <button class="btn btn-primary mr-2" id="btn-{{ project.project_id }}" value="{{ project.project_id }}" onclick="checkAvailability(this.value)">
                         Check Availability
-                    </button>
-                    <!-- Updated button to open modal -->
-                    <button class="btn btn-success" value="{{ project.project_id }}" onclick="openModal('{{ project.project_id }}')">Select Project</button>
+                        </button>
+                        <!-- Updated button to open modal -->
+                        <button class="btn btn-success" value="{{ project.project_id }}" onclick="openModal('{{ project.project_id }}')">Select Project</button>
+                    </div>
                 </div>
             </div>
-        </div>
- 
-    
-    <!-- Modal -->
-    <div class="modal fade" id="exampleModal{{ project.project_id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <p id="modalContent">Are you sure you want to select {{ project.project_title }}?</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="confirmButton">Confirm</button>
+            <!-- Modal -->
+            <div class="modal fade" id="exampleModal{{ project.project_id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p id="modalContent">Are you sure you want to select {{ project.project_title }}?</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" value="{{ project.project_id }}" id="confirmButton-{{ project.project_id }}" onclick="confirmSelection(this.value)">Confirm</button>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-    {% endfor %}
-
-    <div class="text-center mt-3">
-        <div style="background-color: #f82249; width: 30px; height: 30px; border-radius: 50%; display: inline-flex; justify-content: center; align-items: center;">
-            <span class="scroll-arrow" onclick="scrollToTop()" style="color: white;">▲</span>
-        </div>
-        <div style="color: #f82249;">Back to Top</div>
-    </div>
-</main>
-
-
-
-
-    <!-- Bootstrap JavaScript Bundle with Popper -->
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    
-    
-    <script>
-
-        function openModal(projectId) {
-                $('#exampleModal' + projectId).modal('show');
+            {% endfor %}
+            <div class="text-center mt-3">
+                <div style="background-color: #f82249; width: 30px; height: 30px; border-radius: 50%; display: inline-flex; justify-content: center; align-items: center;">
+                    <span class="scroll-arrow" onclick="scrollToTop()" style="color: white; cursor: pointer;">▲</span>
+                </div>
+                <div style="color: #f82249;">Back to Top</div>
+            </div>
+        </main>
+        <!-- Bootstrap JavaScript Bundle with Popper -->
+        <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <script>
+            function openModal(projectId) {
+                    $('#exampleModal' + projectId).modal('show');
+                }
+                
+            function scrollToTop() {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             }
             
-        function scrollToTop() {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function filterProjects() {
-            var input, filter, projectItems, projectTitle, availabilityText, i, txtValue;
-            input = document.getElementById("searchBox");
-            filter = input.value.toUpperCase();
-            projectItems = document.getElementsByClassName("project-item");
-
-            for (i = 0; i < projectItems.length; i++) {
-                projectTitle = projectItems[i].querySelector("h2");
-                availabilityText = projectItems[i].querySelector("p");
-                txtValue = projectTitle.textContent || projectTitle.innerText;
-                txtValue += availabilityText.textContent || availabilityText.innerText;
-
-                if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                    projectItems[i].style.display = "";
-                } else {
-                    projectItems[i].style.display = "none";
-                }
-            }
-        }
-
-        function checkAvailability(project_id) {
-
-            document.getElementById('btn-' + project_id).innerHTML = "Loading...";
-            document.getElementById('btn-' + project_id).disabled = true;
+            function filterProjects() {
+                var input, filter, projectItems, projectTitle, availabilityText, i, txtValue;
+                input = document.getElementById("searchBox");
+                filter = input.value.toUpperCase();
+                projectItems = document.getElementsByClassName("project-item");
             
-            setTimeout(function() {
-
-            $.ajaxSetup(
-                {
-                    async:false
-                }
-            );
-
-            let api_url = "{% url 'check_availability' %}"  + project_id + "/";
-
-            console.log(api_url);
-
-            $.ajax({
-                url: api_url,
-                type: 'GET',
-                success: function(data){
-                    if (data <= 0){
-                        document.getElementById("avail-" + project_id).classList.remove("text-green-600");
-                        document.getElementById("avail-" + project_id).classList.add("text-red-600");
-                        document.getElementById("avail-" + project_id).innerHTML = "Not Available (0/2)";
-                        
+                for (i = 0; i < projectItems.length; i++) {
+                    projectTitle = projectItems[i].querySelector("h2");
+                    availabilityText = projectItems[i].querySelector("p");
+                    txtValue = projectTitle.textContent || projectTitle.innerText;
+                    txtValue += availabilityText.textContent || availabilityText.innerText;
+            
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        projectItems[i].style.display = "";
+                    } else {
+                        projectItems[i].style.display = "none";
                     }
-                    else{
-                        document.getElementById("avail-" + project_id).classList.remove("text-red-600");
-                        document.getElementById("avail-" + project_id).classList.add("text-green-600");
-                        document.getElementById("avail-" + project_id).innerHTML = "Available (" + data + "/2)";
-                    } 
-                },
-                complete: function () {
-                    document.getElementById('btn-' + project_id).innerHTML = "Check Availability";
-                    document.getElementById('btn-' + project_id).disabled = false;
                 }
+            }
+            
+            function checkAvailability(project_id) {
+            
+                document.getElementById('btn-' + project_id).innerHTML = "Loading...";
+                document.getElementById('btn-' + project_id).disabled = true;
+                
+                setTimeout(function() {
+            
+                $.ajaxSetup(
+                    {
+                        async:false
+                    }
+                );
+            
+                let api_url = "{% url 'check_availability' %}"  + project_id + "/";
+            
+                console.log(api_url);
+            
+                $.ajax({
+                    url: api_url,
+                    type: 'GET',
+                    success: function(data){
+                        if (data <= 0){
+                            document.getElementById("avail-" + project_id).classList.remove("text-green-600");
+                            document.getElementById("avail-" + project_id).classList.add("text-red-600");
+                            document.getElementById("avail-" + project_id).innerHTML = "Not Available (0/2)";
+                            
+                        }
+                        else{
+                            document.getElementById("avail-" + project_id).classList.remove("text-red-600");
+                            document.getElementById("avail-" + project_id).classList.add("text-green-600");
+                            document.getElementById("avail-" + project_id).innerHTML = "Available (" + data + "/2)";
+                        } 
+                    },
+                    complete: function () {
+                        document.getElementById('btn-' + project_id).innerHTML = "Check Availability";
+                        document.getElementById('btn-' + project_id).disabled = false;
+                    }
+            
+                });
+            
+                }, 150);
+            }
+            
+            function confirmSelection(project_id) {
+                user_id = "{{ user_id }}";
+                console.log(user_id);
+                console.log(project_id);
+                
 
-            });
+                $.ajaxSetup(
+                    {
+                        async:false
+                    }
+                );
 
-            }, 150);
-        }
+                $.ajax(
+                    {
+                        url: "{% url 'confirm_project' %}",
+                        type: 'POST',
+                        data:{
+                            user_id : user_id,
+                            project_id : project_id,
+                            csrfmiddlewaretoken: "{{ csrf_token }}",
+                        },
+                        success: function (data){
+                            console.log(data);
+                            alert('Project successfully selected!');
+                            window.location.replace("/view_selected_project/");
+                        },
+                        error: function (data) {
 
-    </script>
-</body>
+                            console.log(data);
+
+                            if (data.responseText === "Unauthorized") {
+                                alert("You are unauthorized to do this operation.");
+                                $('#exampleModal' + project_id).modal('hide');
+                            }
+                            else if (data.responseText === "Already selected!") {
+                                alert("You have already selected a project. You cannot proceed!");
+                                $('#exampleModal' + project_id).modal('hide');
+                            }
+                            else if (data.responseText === "Project not found!") {
+                                alert("Project not found. Please try again!");
+                                $('#exampleModal' + project_id).modal('hide');
+                            }
+                            else if (data.responseText === "Project unavailable!") {
+                                alert("Your choice of project is not available now. Please try with another project!");
+                                $('#exampleModal' + project_id).modal('hide');
+                                checkAvailability(project_id); // if possible, updatee all availabilities
+                            }
+                            else if (data.responseText === "User not found!") {
+                                alert("User not found. Please log out and try again!");
+                                $('#exampleModal' + project_id).modal('hide');
+                            }
+                            else if (data.responseText === "Bad Request") {
+                                alert("Bad Request. Please try again later!");
+                                $('#exampleModal' + project_id).modal('hide');
+                            }
+
+                        }
+                    }
+                )
+
+                
+            }
+            
+        </script>
+    </body>
 </html>
