@@ -115,7 +115,7 @@ def check_availability(request, project_id):
     if request.method == "GET":
         project = Projects.objects.filter(project_id=project_id)
         
-        print(project)
-        print(project[0])
-
-        return HttpResponse(project)
+        if not project:
+            return HttpResponse(0)
+        else:
+            return HttpResponse(project[0].availability)

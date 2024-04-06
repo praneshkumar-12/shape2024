@@ -78,17 +78,19 @@
         <input type="text" class="form-control mb-3" id="searchBox" placeholder="Search..." oninput="filterProjects()">
         {% for project in projects %}
         <div class="mb-4 project-item">
-            <div class="p-4 border-b border-gray-300">
+            <div class="p-4 border-b border-gray-300" id="{{ project.project_id }}">
                 <h2 class="text-lg font-semibold">{{ project.project_title }}</h2>
                 {% if project.availability > 0 %}
-                <p class="text-green-600">Available ({{ project.availability }}/2)</p>
+                <p id="avail-{{ project.project_id }}" class="text-green-600">Available ({{ project.availability }}/2)</p>
                 {% else %}
-                <p class="text-red-600">Not Available ({{ project.availability }}/2)</p>
+                <p id="avail-{{ project.project_id }}" class="text-red-600">Not Available ({{ project.availability }}/2)</p>
                 {% endif %}
                 <div>
-                    <button class="btn btn-primary mr-2">Check Availability</button>
+                    <button class="btn btn-primary mr-2" id="btn-{{ project.project_id }}" value="{{ project.project_id }}" onclick="checkAvailability(this.value)">
+                        Check Availability
+                    </button>
                     <!-- Updated button to open modal -->
-                    <button class="btn btn-success" onclick="openModal('{{ project.project_id }}')">Select Project</button>
+                    <button class="btn btn-success" value="{{ project.project_id }}" onclick="openModal('{{ project.project_id }}')">Select Project</button>
                 </div>
             </div>
         </div>
@@ -165,6 +167,50 @@
                 }
             }
         }
+
+        function checkAvailability(project_id) {
+
+            document.getElementById('btn-' + project_id).innerHTML = "Loading...";
+            document.getElementById('btn-' + project_id).disabled = true;
+            
+            setTimeout(function() {
+
+            $.ajaxSetup(
+                {
+                    async:false
+                }
+            );
+
+            let api_url = "{% url 'check_availability' %}"  + project_id + "/";
+
+            console.log(api_url);
+
+            $.ajax({
+                url: api_url,
+                type: 'GET',
+                success: function(data){
+                    if (data <= 0){
+                        document.getElementById("avail-" + project_id).classList.remove("text-green-600");
+                        document.getElementById("avail-" + project_id).classList.add("text-red-600");
+                        document.getElementById("avail-" + project_id).innerHTML = "Not Available (0/2)";
+                        
+                    }
+                    else{
+                        document.getElementById("avail-" + project_id).classList.remove("text-red-600");
+                        document.getElementById("avail-" + project_id).classList.add("text-green-600");
+                        document.getElementById("avail-" + project_id).innerHTML = "Available (" + data + "/2)";
+                    } 
+                },
+                complete: function () {
+                    document.getElementById('btn-' + project_id).innerHTML = "Check Availability";
+                    document.getElementById('btn-' + project_id).disabled = false;
+                }
+
+            });
+
+            }, 150);
+        }
+
     </script>
 </body>
 </html>
