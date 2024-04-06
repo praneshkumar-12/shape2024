@@ -30,8 +30,9 @@
     </header>
 
     <main class="p-4">
+        <input type="text" class="form-control mb-3" id="searchBox" placeholder="Search..." oninput="filterProjects()">
         {% for project in projects %}
-        <div class="mb-4">
+        <div class="mb-4 project-item">
             <div class="p-4 border-b border-gray-300">
                 <h2 class="text-lg font-semibold">{{ project.project_title }}</h2>
                 {% if project.availability > 0 %}
@@ -45,6 +46,7 @@
                 </div>
             </div>
         </div>
+        
 
     <div class="modal fade" id="exampleModal{{ project.project_id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -81,6 +83,26 @@
     <script>
         function scrollToTop() {
             window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function filterProjects() {
+            var input, filter, projectItems, projectTitle, availabilityText, i, txtValue;
+            input = document.getElementById("searchBox");
+            filter = input.value.toUpperCase();
+            projectItems = document.getElementsByClassName("project-item");
+
+            for (i = 0; i < projectItems.length; i++) {
+                projectTitle = projectItems[i].querySelector("h2");
+                availabilityText = projectItems[i].querySelector("p");
+                txtValue = projectTitle.textContent || projectTitle.innerText;
+                txtValue += availabilityText.textContent || availabilityText.innerText;
+
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    projectItems[i].style.display = "";
+                } else {
+                    projectItems[i].style.display = "none";
+                }
+            }
         }
     </script>
 </body>
