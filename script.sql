@@ -32,3 +32,4 @@ create table assigned_projects(
 
 alter table assigned_projects add constraint unique_user_id unique(user_id);
 
+commit;
