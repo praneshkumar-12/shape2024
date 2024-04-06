@@ -45,7 +45,7 @@ def bypass_login_check(request):
 
 
 def is_already_selected(request):
-    user_id = request.session["_id"]
+    user_id = request.session.get("_id")
 
     assigned_project = AssignedProjects.objects.filter(user=user_id)
 

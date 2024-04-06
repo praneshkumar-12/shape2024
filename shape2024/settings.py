@@ -49,6 +49,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "shape24_app.jwt_middleware.JWTMiddleware",
+    "shape24_app.error_handling_middleware.ExceptionHandlerMiddleware",
 ]
 
 JWT_MIDDLEWARE_EXCLUDED_PATHS = ["/login/"]
