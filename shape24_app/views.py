@@ -51,9 +51,9 @@ def is_already_selected(request):
 
     if not assigned_project:
         return False
-    
+
     assigned_project = assigned_project[0]
-    
+
     return True
 
 
@@ -114,7 +114,6 @@ def login(request):
 
 def dashboard(request):
     if request.method == "GET":
-
         if is_already_selected(request):
             return redirect("/view_selected_project/")
 
@@ -124,45 +123,51 @@ def dashboard(request):
 
         for project in projects:
             project_attributes = vars(project).copy()
-            del project_attributes['_state']
+            del project_attributes["_state"]
             projects_list.append(project_attributes)
-        
+
         random.shuffle(projects_list)
 
-        return render(request, "dashboard.html", {"projects": projects_list, "user_id": request.session["_id"]})
+        return render(
+            request,
+            "dashboard.html",
+            {"projects": projects_list, "user_id": request.session["_id"]},
+        )
+
 
 def check_availability(request, project_id):
     if request.method == "GET":
         project = Projects.objects.filter(project_id=project_id)
-        
+
         if not project:
             return HttpResponse(0)
         else:
             return HttpResponse(project[0].availability)
+
 
 def confirm_project(request):
     if request.method == "POST":
         user_id = request.POST.get("user_id")
         project_id = request.POST.get("project_id")
 
-        if str(request.session['_id']) != str(user_id):
+        if str(request.session["_id"]) != str(user_id):
             return HttpResponse("Unauthorized", status=401)
 
         existing_user = AssignedProjects.objects.filter(user_id=user_id)
 
         if existing_user:
             return HttpResponse("Already selected!", status=409)
-        
+
         existing_project = Projects.objects.filter(project_id=project_id)
 
         if not existing_project:
             return HttpResponse("Project not found!", status=404)
-        
+
         existing_project = existing_project[0]
 
         if existing_project.availability <= 0:
             return HttpResponse("Project unavailable!", status=409)
-        
+
         existing_project.availability = existing_project.availability - 1
         existing_project.save()
 
@@ -170,14 +175,17 @@ def confirm_project(request):
 
         if not user:
             return HttpResponse("User not found!", status=404)
-        
+
         user = user[0]
 
-        assigned_project = AssignedProjects.objects.create(user=user, project=existing_project)
+        assigned_project = AssignedProjects.objects.create(
+            user=user, project=existing_project
+        )
 
         return HttpResponse("OK", status=200)
 
     return HttpResponse("Bad Request", status=400)
+
 
 def view_selected_project(request):
     user_id = request.session["_id"]
@@ -186,12 +194,13 @@ def view_selected_project(request):
 
     if not assigned_project:
         return redirect("/dashboard/")
-    
+
     assigned_project = assigned_project[0]
-    
+
     project = Projects.objects.get(project_id=assigned_project.project.project_id)
-    
+
     return render(request, "result.html", {"project": project.project_title})
+
 
 def logout(request):
     request.session.clear()

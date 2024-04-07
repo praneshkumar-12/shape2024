@@ -10,8 +10,10 @@ class JWTMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
-        
-        if request.path in settings.JWT_MIDDLEWARE_EXCLUDED_PATHS or  "/checkavail" in request.path:
+        if (
+            request.path in settings.JWT_MIDDLEWARE_EXCLUDED_PATHS
+            or "/checkavail" in request.path
+        ):
             return self.get_response(request)
 
         jwt_token = request.session.get("jwt-token", None)

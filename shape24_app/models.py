@@ -2,9 +2,7 @@ from django.db import models
 
 
 class Users(models.Model):
-    user_id = models.IntegerField(
-        primary_key=True
-    )
+    user_id = models.IntegerField(primary_key=True)
     email = models.CharField(max_length=255)
     password = models.CharField(max_length=255, blank=True, null=True)
 
@@ -33,4 +31,3 @@ class AssignedProjects(models.Model):
         managed = False
         db_table = "assigned_projects"
         unique_together = (("user", "project"),)
-
