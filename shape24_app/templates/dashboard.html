@@ -129,8 +129,6 @@
             
                 let api_url = "{% url 'check_availability' %}"  + project_id + "/";
             
-                console.log(api_url);
-            
                 $.ajax({
                     url: api_url,
                     type: 'GET',
@@ -159,9 +157,6 @@
             
             function confirmSelection(project_id) {
                 user_id = "{{ user_id }}";
-                console.log(user_id);
-                console.log(project_id);
-                
             
                 $.ajaxSetup(
                     {
@@ -179,13 +174,10 @@
                             csrfmiddlewaretoken: "{{ csrf_token }}",
                         },
                         success: function (data){
-                            console.log(data);
                             alert('Project successfully selected!');
                             window.location.replace("/view_selected_project/");
                         },
                         error: function (data) {
-            
-                            console.log(data);
             
                             if (data.responseText === "Unauthorized") {
                                 alert("You are unauthorized to do this operation.");
@@ -215,9 +207,7 @@
             
                         }
                     }
-                )
-            
-                
+                ) 
             }
             
             function sleep(ms) {
@@ -272,8 +262,6 @@
             var mainElement = document.querySelector("main");
             mainElement.appendChild(projectContainer);
             }
-            
-            
         </script>
     </body>
 </html>
