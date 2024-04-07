@@ -202,7 +202,7 @@
                             else if (data.responseText === "Project unavailable!") {
                                 alert("Your choice of project is not available now. Please try with another project!");
                                 $('#exampleModal' + project_id).modal('hide');
-                                checkAvailability(project_id); // if possible, updatee all availabilities
+                                refreshAvailabilities(project_id);
                             }
                             else if (data.responseText === "User not found!") {
                                 alert("User not found. Please log out and try again!");
@@ -231,6 +231,12 @@
                 await sleep(150);
                 sortProjectsByAvailability();
             }
+
+            document.addEventListener("DOMContentLoaded", function() {
+                document.getElementById("refreshAvailabilitiesBtn").addEventListener("click", function() {
+                    sortProjectsByAvailability();
+                });
+            });
             
             
             function sortProjectsByAvailability() {
