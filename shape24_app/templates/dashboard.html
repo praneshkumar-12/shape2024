@@ -83,7 +83,11 @@
                 <div class="row">
                     {% for project in projects %}
                     <div class="col-md-3 mb-4 project-item">
-                        <div class="p-4 border border-gray-300">
+                        {% if project.availability > 0 %}
+                            <div id="div-{{ project.project_id }}" class="p-4 border border-gray-300" style="background-color: #d4edda">
+                        {% else %}
+                            <div id="div-{{ project.project_id }}" class="p-4 border border-gray-300" style="background-color: #f8d7da">
+                        {% endif %}
                             <h2 class="text-lg font-semibold">{{ project.project_title }}</h2>
                             <h3 class="text-base">SDG: {{ project.sdg }}</h3>
                             {% if project.availability > 0 %}
@@ -92,9 +96,9 @@
                             <p id="avail-{{ project.project_id }}" class="text-red-600">Not Available ({{ project.availability }}/1)</p>
                             {% endif %}
                             <div>
-                                <button class="btn btn-primary mr-2" id="btn-{{ project.project_id }}" value="{{ project.project_id }}" onclick="checkAvailability(this.value)">
+                                {% comment %} <button class="btn btn-primary mr-2" id="btn-{{ project.project_id }}" value="{{ project.project_id }}" onclick="checkAvailability(this.value)">
                                 Refresh
-                                </button>
+                                </button> {% endcomment %}
                                 <!-- Updated button to open modal -->
                                 <button class="btn btn-success" value="{{ project.project_id }}" onclick="openModal('{{ project.project_id }}')">Select Project</button>
                             </div>
@@ -157,7 +161,9 @@
                 for (i = 0; i < projectItems.length; i++) {
                     projectTitle = projectItems[i].querySelector("h2");
                     availabilityText = projectItems[i].querySelector("p");
+                    sdg = projectItems[i].querySelector("h3");
                     txtValue = projectTitle.textContent || projectTitle.innerText;
+                    txtValue += sdg.textContent || sdg.innerText;
                     txtValue += availabilityText.textContent || availabilityText.innerText;
             
                     if (txtValue.toUpperCase().indexOf(filter) > -1) {
@@ -170,8 +176,8 @@
             
             function checkAvailability(project_id) {
             
-                document.getElementById('btn-' + project_id).innerHTML = "Loading...";
-                document.getElementById('btn-' + project_id).disabled = true;
+                // document.getElementById('btn-' + project_id).innerHTML = "Loading...";
+                // document.getElementById('btn-' + project_id).disabled = true;
                 
                 setTimeout(function() {
             
@@ -188,20 +194,22 @@
                     type: 'GET',
                     success: function(data){
                         if (data <= 0){
+                            document.getElementById("div-" + project_id).style.backgroundColor = '#f8d7da';
                             document.getElementById("avail-" + project_id).classList.remove("text-green-600");
                             document.getElementById("avail-" + project_id).classList.add("text-red-600");
-                            document.getElementById("avail-" + project_id).innerHTML = "Not Available (0/2)";
+                            document.getElementById("avail-" + project_id).innerHTML = "Not Available (0/1)";
                             
                         }
                         else{
+                            document.getElementById("div-" + project_id).style.backgroundColor = '#d4edda'
                             document.getElementById("avail-" + project_id).classList.remove("text-red-600");
                             document.getElementById("avail-" + project_id).classList.add("text-green-600");
-                            document.getElementById("avail-" + project_id).innerHTML = "Available (" + data + "/2)";
+                            document.getElementById("avail-" + project_id).innerHTML = "Available (" + data + "/1)";
                         } 
                     },
                     complete: function () {
-                        document.getElementById('btn-' + project_id).innerHTML = "Refresh";
-                        document.getElementById('btn-' + project_id).disabled = false;
+                        // document.getElementById('btn-' + project_id).innerHTML = "Refresh";
+                        // document.getEl   ementById('btn-' + project_id).disabled = false;
                     }
             
                 });
@@ -269,10 +277,14 @@
             }
             
             async function refreshAvailabilities(){
+                document.getElementById("refreshAvailabilitiesBtn").innerHTML = "Refreshing...";
+                document.getElementById("refreshAvailabilitiesBtn").disabled = true;
                 {% for project in projects %}
                     checkAvailability("{{ project.project_id }}");
                 {% endfor %}
                 await sleep(150);
+                document.getElementById("refreshAvailabilitiesBtn").innerHTML = "Refresh Availabilities";
+                document.getElementById("refreshAvailabilitiesBtn").disabled = false;
                 // sortProjectsByAvailability();
             }
 

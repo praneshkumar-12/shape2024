@@ -119,27 +119,32 @@ def dashboard(request):
 
         projects = Projects.objects.all()
 
-        projects_list = []
+        # projects_list = []
         projects_by_sdg = {}
 
         for project in projects:
             project_attributes = vars(project).copy()
             del project_attributes["_state"]
-            projects_list.append(project_attributes)
+            # projects_list.append(project_attributes)
             if projects_by_sdg.get(project_attributes["sdg"]):
                 projects_by_sdg[project_attributes["sdg"]].append(project)
             else:
                 projects_by_sdg[project_attributes["sdg"]]=[project]
 
-        random.shuffle(projects_list)
+        # random.shuffle(projects_list)
+
+        projects_list_by_sdg = [lst for lst in projects_by_sdg.values()]
+
+        random.shuffle(projects_list_by_sdg)
+
 
         return render(
             request,
             "dashboard.html",
             {
-                "projects": projects_list, 
+                # "projects": projects_list, 
                 "user_id": request.session["_id"],
-                "projects_by_sdg": projects_by_sdg
+                "projects": pick_sdg_wise(projects_list_by_sdg)
             },
         )
 
@@ -214,3 +219,26 @@ def view_selected_project(request):
 def logout(request):
     request.session.clear()
     return redirect("/login/")
+
+def pick_sdg_wise(lists):
+    final_selection = []
+    
+    while any(lists): 
+        for lst in lists:
+            num_to_pick = min(4, len(lst)) 
+            selected = random.sample(lst, num_to_pick) 
+            random.shuffle(selected)
+            final_selection.extend(selected) 
+            for select in selected:
+                lst.remove(select) 
+    return final_selection
+
+# Example lists
+# list1 = ["a", "b", "c", "d", "e", "f"]
+# list2 = ["1", "2", "3", "4"]
+# list3 = ["x", "y", "z",'ab','bc','cd','de']
+# lists = [list1, list2, list3]
+
+# # Generate final selection
+# final_selection = pick_sdg_wise(lists)
+# print("Final Selection:", final_selection)
