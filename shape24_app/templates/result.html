@@ -24,8 +24,18 @@
         </header>
         <div class="container mx-auto mt-8">
             <div class="text-center">
-                <h1 class="text-2xl font-bold text-green-600 mb-4">Congratulations! You have been allotted with the following project:</h1>
-                <h2 class="text-xl font-semibold">{{ project }}</h2>
+                <h1 class="text-3xl font-bold text-green-600 mb-4">Congratulations! You have been allotted with the following project:</h1>
+                <h2 class="text-2xl font-semibold">{{ project.project_title }}</h2>
+                <br>
+                <h2 class="text-xl font-semibold">{{ project.sdg }}</h2>
+                <h2 class="text-xl font-semibold">{{ project.description }}</h2>
+                <br>
+                <h3 class="text-lg font-semibold">Faculty Name: {{ project.faculty_name }}</h3>
+                <h3 class="text-lg font-semibold">Department: {{ project.department }}</h3>
+                <h3 class="text-lg font-semibold">Email: {{ project.college_email }}</h3>
+                <h3 class="text-lg font-semibold">Ph. No: {{ project.mobile_number }}</h3>
+
+
             </div>
         </div>
     </body>
