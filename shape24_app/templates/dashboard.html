@@ -13,6 +13,28 @@
             .modal-backdrop {
             background-color: rgba(0, 0, 0, 0.5);
             }
+
+            .row {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.project-item {
+    flex: 1 0 25%; /* Adjust this value based on your layout needs */
+    display: flex;
+    flex-direction: column;
+}
+
+.project-item > .p-4 {
+    flex: 1;
+}
+
+/* Optional: You may need to adjust padding and margin if necessary */
+.project-item .p-4 {
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
         </style>
     </head>
     <body class="bg-gray-100">
@@ -27,12 +49,12 @@
                 <a href="/logout" class="btn btn-danger">Logout</a>
             </div>
         </header>
-        <main class="p-4">
+        <!-- <main class="p-4">
             <input type="text" class="form-control mb-3" id="searchBox" placeholder="Search..." oninput="filterProjects()">
             <div class="d-flex justify-content-end align-items-end">
                 <button class="btn btn-info" id="refreshAvailabilitiesBtn" onclick="refreshAvailabilities()"> Refresh Availabilities </button>
             </div>
-            {% for project in projects %}
+            Removed line % for project in projects %
             <div class="mb-4 project-item">
                 <div class="p-4 border-b border-gray-300" id="{{ project.project_id }}">
                     <h2 class="text-lg font-semibold">{{ project.project_title }}</h2>
@@ -45,33 +67,65 @@
                         <button class="btn btn-primary mr-2" id="btn-{{ project.project_id }}" value="{{ project.project_id }}" onclick="checkAvailability(this.value)">
                         Check Availability
                         </button>
-                        <!-- Updated button to open modal -->
+                        
                         <button class="btn btn-success" value="{{ project.project_id }}" onclick="openModal('{{ project.project_id }}')">Select Project</button>
                     </div>
                 </div>
-            </div>
-            <!-- Modal -->
-            <div class="modal fade" id="exampleModal{{ project.project_id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <p id="modalContent">Are you sure you want to select {{ project.project_title }}?</p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary" value="{{ project.project_id }}" id="confirmButton-{{ project.project_id }}" onclick="confirmSelection(this.value)">Confirm</button>
+            </div> -->
+
+            <main class="p-4">
+                <input type="text" class="form-control mb-3" id="searchBox" placeholder="Search..." oninput="filterProjects()">
+                <div class="d-flex justify-content-end align-items-end">
+                    <button class="btn btn-secondary mr-2" id="filtersBtn">Filters</button>
+                    <button class="btn btn-info" id="refreshAvailabilitiesBtn" onclick="refreshAvailabilities()"> Refresh Availabilities </button>
+                </div>
+                <br>
+                <div class="row">
+                    {% for project in projects %}
+                    <div class="col-md-3 mb-4 project-item">
+                        <div class="p-4 border border-gray-300">
+                            <h2 class="text-lg font-semibold">{{ project.project_title }}</h2>
+                            <h3 class="text-base">SDG: {{ project.sdg }}</h3>
+                            {% if project.availability > 0 %}
+                            <p id="avail-{{ project.project_id }}" class="text-green-600">Available ({{ project.availability }}/2)</p>
+                            {% else %}
+                            <p id="avail-{{ project.project_id }}" class="text-red-600">Not Available ({{ project.availability }}/2)</p>
+                            {% endif %}
+                            <div>
+                                <button class="btn btn-primary mr-2" id="btn-{{ project.project_id }}" value="{{ project.project_id }}" onclick="checkAvailability(this.value)">
+                                Refresh
+                                </button>
+                                <!-- Updated button to open modal -->
+                                <button class="btn btn-success" value="{{ project.project_id }}" onclick="openModal('{{ project.project_id }}')">Select Project</button>
+                            </div>
                         </div>
                     </div>
+                    <!-- Modal -->
+                    <div class="modal fade" id="exampleModal{{ project.project_id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <!-- Modal content -->
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <p id="modalContent">Are you sure you want to select {{ project.project_title }}?</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-primary" value="{{ project.project_id }}" id="confirmButton-{{ project.project_id }}" onclick="confirmSelection(this.value)">Confirm</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
                 </div>
-            </div>
-            {% endfor %}
-        </main>
+            </main>
+
+            
         <div class="text-center mt-3">
             <div style="background-color: #f82249; width: 30px; height: 30px; border-radius: 50%; display: inline-flex; justify-content: center; align-items: center;">
                 <span class="scroll-arrow" onclick="scrollToTop()" style="color: white; cursor: pointer;">▲</span>
@@ -146,7 +200,7 @@
                         } 
                     },
                     complete: function () {
-                        document.getElementById('btn-' + project_id).innerHTML = "Check Availability";
+                        document.getElementById('btn-' + project_id).innerHTML = "Refresh";
                         document.getElementById('btn-' + project_id).disabled = false;
                     }
             
