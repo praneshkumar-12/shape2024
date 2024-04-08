@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -31,7 +32,7 @@
     </div>
 </header>
 <div class="mt-8 text-center">
-    <button id="downloadCSV" class="btn btn-primary" onclick="downloadCSV()">
+    <button id="downloadCSV" class="btn btn-primary" onclick="window.location.replace('/administrator/allotments/');">
         Download CSV
     </button>
 </div>

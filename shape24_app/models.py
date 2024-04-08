@@ -25,8 +25,8 @@ class Projects(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'projects'
-        unique_together = (('project_id', 'project_title'),)
+        db_table = "projects"
+        unique_together = (("project_id", "project_title"),)
 
 
 class AssignedProjects(models.Model):

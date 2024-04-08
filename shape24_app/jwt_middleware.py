@@ -13,6 +13,7 @@ class JWTMiddleware:
         if (
             request.path in settings.JWT_MIDDLEWARE_EXCLUDED_PATHS
             or "/checkavail" in request.path
+            or "/administrator" in request.path
         ):
             return self.get_response(request)
 

@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.conf import settings
-from django.http import HttpResponse
+from django.http import HttpResponse, FileResponse
+from django.views import View
 from shape24_app.models import Users
 from shape24_app.models import Projects
 from shape24_app.models import AssignedProjects
@@ -8,6 +9,7 @@ import hashlib
 import datetime
 import jwt
 import random
+import csv
 
 
 def bypass_login_check(request):
@@ -78,6 +80,9 @@ def login(request):
         email = request.POST.get("email", None)
         password = request.POST.get("pass", None)
 
+        if email == "admin@ssn.edu.in" and password == "Admin@1234":
+            return redirect("/administrator/")
+
         if email and password:
             user = Users.objects.filter(email=email)
 
@@ -129,7 +134,7 @@ def dashboard(request):
             if projects_by_sdg.get(project_attributes["sdg"]):
                 projects_by_sdg[project_attributes["sdg"]].append(project)
             else:
-                projects_by_sdg[project_attributes["sdg"]]=[project]
+                projects_by_sdg[project_attributes["sdg"]] = [project]
 
         # random.shuffle(projects_list)
 
@@ -137,14 +142,13 @@ def dashboard(request):
 
         random.shuffle(projects_list_by_sdg)
 
-
         return render(
             request,
             "dashboard.html",
             {
-                # "projects": projects_list, 
+                # "projects": projects_list,
                 "user_id": request.session["_id"],
-                "projects": pick_sdg_wise(projects_list_by_sdg)
+                "projects": pick_sdg_wise(projects_list_by_sdg),
             },
         )
 
@@ -215,30 +219,55 @@ def view_selected_project(request):
 
     return render(request, "result.html", {"project": project.project_title})
 
+def admin_home(request):
+    return render(request, "download_csv.html")
 
 def logout(request):
     request.session.clear()
     return redirect("/login/")
 
+
 def pick_sdg_wise(lists):
     final_selection = []
-    
-    while any(lists): 
+
+    while any(lists):
         for lst in lists:
-            num_to_pick = min(4, len(lst)) 
-            selected = random.sample(lst, num_to_pick) 
+            num_to_pick = min(4, len(lst))
+            selected = random.sample(lst, num_to_pick)
             random.shuffle(selected)
-            final_selection.extend(selected) 
+            final_selection.extend(selected)
             for select in selected:
-                lst.remove(select) 
+                lst.remove(select)
     return final_selection
 
-# Example lists
-# list1 = ["a", "b", "c", "d", "e", "f"]
-# list2 = ["1", "2", "3", "4"]
-# list3 = ["x", "y", "z",'ab','bc','cd','de']
-# lists = [list1, list2, list3]
+class AllotmentsDownloadView(View):
+    def get(self, request):
 
-# # Generate final selection
-# final_selection = pick_sdg_wise(lists)
-# print("Final Selection:", final_selection)
+        file = "allotments.csv"
+
+        allotted_projects = AssignedProjects.objects.all()
+
+        with open(file, "w", newline='', encoding='utf-8') as f:
+
+            writer = csv.writer(f)
+
+            writer.writerow(["user_id", "email", "allotted_project"])
+
+            for allotted_project in allotted_projects:
+                project = Projects.objects.get(project_id = allotted_project.project.project_id)
+
+                user = Users.objects.get(user_id = allotted_project.user.user_id)
+
+                writer.writerow([user.user_id, user.email, project.project_title])
+        
+        f.close()
+
+        file_object = open(file, "rb")
+
+        response = FileResponse(file_object, as_attachment=True)
+
+        response["Content-Disposition"] = f'attachment; filename="allotments.csv"'
+
+        return response
+            
+        # return HttpResponse("OK")
