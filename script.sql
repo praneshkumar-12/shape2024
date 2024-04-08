@@ -9,7 +9,7 @@ create table users (
     primary key(user_id, email)
 );
 
-insert into users values(100, 'test@gmail.com', '1234');
+insert into users values(100, 'test@gmail.com', '1234');
 
 create table projects (
     project_id integer,
@@ -18,9 +18,9 @@ create table projects (
     primary key(project_id, project_title)
 );
 
-insert into projects values(122133, 'Project 1', 2);
-insert into projects values(122134, 'Project 2', 2);
-insert into projects values(122135, 'Project 3', 2);
+-- insert into projects values(122133, 'Project 1', 2);
+-- insert into projects values(122134, 'Project 2', 2);
+-- insert into projects values(122135, 'Project 3', 2);
 
 create table assigned_projects(
     user_id int,
@@ -37,3 +37,5 @@ commit;
 alter table projects add column description text, add column sdg text, add column faculty_name text, add column college_email text, add column mobile_number text, add column department text;
 
 commit;
+
+-- use mysql to import records from csv file
