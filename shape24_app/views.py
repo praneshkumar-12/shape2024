@@ -10,6 +10,7 @@ import datetime
 import jwt
 import random
 import csv
+from send_email import send_email
 
 
 def bypass_login_check(request):
@@ -200,6 +201,17 @@ def confirm_project(request):
             user=user, project=existing_project
         )
 
+        send_email("<YOUR_MAIL>", "Shape 2024 - Allotments", 
+                   "Congratulations! You have been allotted with the following project:\n" +
+                    f"{ existing_project.project_title }\n" +
+                    f"{ existing_project.sdg }\n" +
+                    f"{ existing_project.description }\n" +
+                    f" Faculty Name: { existing_project.faculty_name }\n" +
+                    f" Department: { existing_project.department }\n" +
+                    f" Email: { existing_project.college_email }\n" +
+                    f" Ph. No: { existing_project.mobile_number }\n" \
+        )
+
         return HttpResponse("OK", status=200)
 
     return HttpResponse("Bad Request", status=400)
@@ -217,7 +229,7 @@ def view_selected_project(request):
 
     project = Projects.objects.get(project_id=assigned_project.project.project_id)
 
-    return render(request, "result.html", {"project": project.project_title})
+    return render(request, "result.html", {"project": project})
 
 def admin_home(request):
     return render(request, "download_csv.html")
