@@ -33,3 +33,7 @@ create table assigned_projects(
 alter table assigned_projects add constraint unique_user_id unique(user_id);
 
 commit;
+
+alter table projects add column description text, add column sdg text, add column faculty_name text, add column college_email text, add column mobile_number text, add column department text;
+
+commit;

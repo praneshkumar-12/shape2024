@@ -120,18 +120,27 @@ def dashboard(request):
         projects = Projects.objects.all()
 
         projects_list = []
+        projects_by_sdg = {}
 
         for project in projects:
             project_attributes = vars(project).copy()
             del project_attributes["_state"]
             projects_list.append(project_attributes)
+            if projects_by_sdg.get(project_attributes["sdg"]):
+                projects_by_sdg[project_attributes["sdg"]].append(project)
+            else:
+                projects_by_sdg[project_attributes["sdg"]]=[project]
 
         random.shuffle(projects_list)
 
         return render(
             request,
             "dashboard.html",
-            {"projects": projects_list, "user_id": request.session["_id"]},
+            {
+                "projects": projects_list, 
+                "user_id": request.session["_id"],
+                "projects_by_sdg": projects_by_sdg
+            },
         )
 
 

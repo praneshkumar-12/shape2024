@@ -76,7 +76,7 @@
             <main class="p-4">
                 <input type="text" class="form-control mb-3" id="searchBox" placeholder="Search..." oninput="filterProjects()">
                 <div class="d-flex justify-content-end align-items-end">
-                    <button class="btn btn-secondary mr-2" id="filtersBtn">Filters</button>
+                    {% comment %} <button class="btn btn-secondary mr-2" id="filtersBtn">Filters</button> {% endcomment %}
                     <button class="btn btn-info" id="refreshAvailabilitiesBtn" onclick="refreshAvailabilities()"> Refresh Availabilities </button>
                 </div>
                 <br>
@@ -87,9 +87,9 @@
                             <h2 class="text-lg font-semibold">{{ project.project_title }}</h2>
                             <h3 class="text-base">SDG: {{ project.sdg }}</h3>
                             {% if project.availability > 0 %}
-                            <p id="avail-{{ project.project_id }}" class="text-green-600">Available ({{ project.availability }}/2)</p>
+                            <p id="avail-{{ project.project_id }}" class="text-green-600">Available ({{ project.availability }}/1)</p>
                             {% else %}
-                            <p id="avail-{{ project.project_id }}" class="text-red-600">Not Available ({{ project.availability }}/2)</p>
+                            <p id="avail-{{ project.project_id }}" class="text-red-600">Not Available ({{ project.availability }}/1)</p>
                             {% endif %}
                             <div>
                                 <button class="btn btn-primary mr-2" id="btn-{{ project.project_id }}" value="{{ project.project_id }}" onclick="checkAvailability(this.value)">
@@ -273,49 +273,17 @@
                     checkAvailability("{{ project.project_id }}");
                 {% endfor %}
                 await sleep(150);
-                sortProjectsByAvailability();
+                // sortProjectsByAvailability();
             }
 
             document.addEventListener("DOMContentLoaded", function() {
                 document.getElementById("refreshAvailabilitiesBtn").addEventListener("click", function() {
-                    sortProjectsByAvailability();
+                    // sortProjectsByAvailability();
                 });
             });
             
             
-            function sortProjectsByAvailability() {
-            var projectItems = document.querySelectorAll(".project-item");
             
-            var availableProjects = [];
-            var unavailableProjects = [];
-            
-            // Iterate through project items and separate them based on availability
-            projectItems.forEach(function(project) {
-            var availabilityText = project.querySelector("p");
-            if (availabilityText.classList.contains("text-green-600")) {
-            availableProjects.push(project);
-            } else {
-            unavailableProjects.push(project);
-            }
-            });
-            
-            // Create a container to hold the sorted projects
-            var projectContainer = document.createElement("div");
-            
-            // Append available projects first
-            availableProjects.forEach(function(project) {
-            projectContainer.appendChild(project);
-            });
-            
-            // Append unavailable projects after available ones
-            unavailableProjects.forEach(function(project) {
-            projectContainer.appendChild(project);
-            });
-            
-            // Append the sorted projects to the main element
-            var mainElement = document.querySelector("main");
-            mainElement.appendChild(projectContainer);
-            }
         </script>
     </body>
 </html>
