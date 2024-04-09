@@ -4,8 +4,8 @@ import os
 
 
 def send_email(to, subject, content):
-    user = "YOUR_MAIL"
-    key = "YOUR_KEY"
+    user = "clinic.management.system.service@gmail.com"
+    key = "rrsfsilblgzbiaep"
 
     msg = EmailMessage()
 
