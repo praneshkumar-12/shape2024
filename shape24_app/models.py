@@ -34,4 +34,4 @@ class AssignedProjects(models.Model):
     class Meta:
         managed = False
         db_table = 'assigned_projects'
-        unique_together = (('shape24.dbo.user', 'shape24.dbo.project'),)
+        unique_together = (('user', 'project'),)
