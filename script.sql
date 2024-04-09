@@ -38,4 +38,7 @@ alter table projects add column description text, add column sdg text, add colum
 
 commit;
 
+alter table assigned_projects add column allotment_time text;
+commit;
+
 -- use mysql to import records from csv file

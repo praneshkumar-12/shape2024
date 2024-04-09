@@ -197,8 +197,10 @@ def confirm_project(request):
 
         user = user[0]
 
+        now = datetime.datetime.now()
+
         assigned_project = AssignedProjects.objects.create(
-            user=user, project=existing_project
+            user=user, project=existing_project, allotment_time=now.strftime("%Y-%m-%d %H:%M:%S")
         )
 
         send_email("praneshkumar2210773@ssn.edu.in", "Shape 2024 - Allotments", 
@@ -263,14 +265,14 @@ class AllotmentsDownloadView(View):
 
             writer = csv.writer(f)
 
-            writer.writerow(["user_id", "email", "allotted_project", "faculty_name", "department", "mobile_number", "email", "description", "sdg"])
+            writer.writerow(["allotment_time", "user_id", "email", "allotted_project", "faculty_name", "department", "mobile_number", "email", "description", "sdg"])
 
             for allotted_project in allotted_projects:
                 project = Projects.objects.get(project_id = allotted_project.project.project_id)
 
                 user = Users.objects.get(user_id = allotted_project.user.user_id)
 
-                writer.writerow([user.user_id, user.email, project.project_title, project.faculty_name, project.department, project.mobile_number, project.college_email, project.description, project.sdg])
+                writer.writerow([allotted_project.allotment_time, user.user_id, user.email, project.project_title, project.faculty_name, project.department, project.mobile_number, project.college_email, project.description, project.sdg])
         
         f.close()
 
