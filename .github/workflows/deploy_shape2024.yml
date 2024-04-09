@@ -76,15 +76,5 @@ jobs:
           app-name: 'shape2024'
           slot-name: 'Production'
       
-      - name: Make Migrations Database
-        run: python manage.py makemigrations
       
-      - name: Migrate Database
-        run: python manage.py migrate
-      
-      - name: Make Migrations Database
-        run: python manage.py makemigrations
-
-      - name: Migrate Database
-        run: python manage.py migrate
           
