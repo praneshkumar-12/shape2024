@@ -30,6 +30,7 @@ class Projects(models.Model):
 class AssignedProjects(models.Model):
     user = models.ForeignKey('Users', models.DO_NOTHING, primary_key=True)
     project = models.ForeignKey('Projects', models.DO_NOTHING)
+    allotment_time = models.TextField()
 
     class Meta:
         managed = False

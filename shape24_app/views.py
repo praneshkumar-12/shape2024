@@ -197,8 +197,10 @@ def confirm_project(request):
 
         user = user[0]
 
+        now = datetime.datetime.now()
+
         assigned_project = AssignedProjects.objects.create(
-            user=user, project=existing_project
+            user=user, project=existing_project, allotment_time=now.strftime("%Y-%m-%d %H:%M:%S")
         )
 
         send_email(
@@ -267,7 +269,8 @@ class AllotmentsDownloadView(View):
             writer = csv.writer(f)
 
             writer.writerow(
-                [
+                [   
+                    "allotment_time",
                     "user_id",
                     "email",
                     "allotted_project",
@@ -289,6 +292,7 @@ class AllotmentsDownloadView(View):
 
                 writer.writerow(
                     [
+                        allotted_project.allotment_time,
                         user.user_id,
                         user.email,
                         project.project_title,
