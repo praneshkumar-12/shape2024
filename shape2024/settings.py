@@ -26,7 +26,7 @@ SECRET_KEY = os.environ["SECRET_KEY"]
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = [os.environ["WEBSITE_HOSTNAME"]]
+ALLOWED_HOSTS = [os.environ["WEBSITE_HOSTNAME"], ]
 
 ADMINS = [("Debug", os.environ["FROM_EMAIL"])]
 
@@ -147,7 +147,7 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+STATICFILES_STORAGE = "whitenoise.storage.WhiteNoiseStaticFilesStorage"
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 # Default primary key field type
