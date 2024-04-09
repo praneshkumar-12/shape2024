@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.conf import settings
-from django.http import HttpResponse, FileResponse
+from django.http import HttpResponse, FileResponse, JsonResponse
 from django.views import View
 from shape24_app.models import Users
 from shape24_app.models import Projects
@@ -201,15 +201,15 @@ def confirm_project(request):
             user=user, project=existing_project
         )
 
-        send_email("<YOUR_MAIL>", "Shape 2024 - Allotments", 
+        send_email("praneshkumar2210773@ssn.edu.in", "Shape 2024 - Allotments", 
                    "Congratulations! You have been allotted with the following project:\n" +
                     f"{ existing_project.project_title }\n" +
                     f"{ existing_project.sdg }\n" +
                     f"{ existing_project.description }\n" +
-                    f" Faculty Name: { existing_project.faculty_name }\n" +
-                    f" Department: { existing_project.department }\n" +
-                    f" Email: { existing_project.college_email }\n" +
-                    f" Ph. No: { existing_project.mobile_number }\n" \
+                    f"Faculty Name: { existing_project.faculty_name }\n" +
+                    f"Department: { existing_project.department }\n" +
+                    f"Email: { existing_project.college_email }\n" +
+                    f"Ph. No: { existing_project.mobile_number }\n" \
         )
 
         return HttpResponse("OK", status=200)
@@ -263,14 +263,14 @@ class AllotmentsDownloadView(View):
 
             writer = csv.writer(f)
 
-            writer.writerow(["user_id", "email", "allotted_project"])
+            writer.writerow(["user_id", "email", "allotted_project", "faculty_name", "department", "mobile_number", "email", "description", "sdg"])
 
             for allotted_project in allotted_projects:
                 project = Projects.objects.get(project_id = allotted_project.project.project_id)
 
                 user = Users.objects.get(user_id = allotted_project.user.user_id)
 
-                writer.writerow([user.user_id, user.email, project.project_title])
+                writer.writerow([user.user_id, user.email, project.project_title, project.faculty_name, project.department, project.mobile_number, project.college_email, project.description, project.sdg])
         
         f.close()
 
@@ -282,4 +282,12 @@ class AllotmentsDownloadView(View):
 
         return response
             
-        # return HttpResponse("OK")
+def get_all_availabilities(request):
+    projects = Projects.objects.all()
+
+    projects_availability = {}
+
+    for project in projects:
+        projects_availability[project.project_id] = project.availability
+    
+    return JsonResponse(projects_availability)
