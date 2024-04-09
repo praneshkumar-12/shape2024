@@ -201,15 +201,17 @@ def confirm_project(request):
             user=user, project=existing_project
         )
 
-        send_email("praneshkumar2210773@ssn.edu.in", "Shape 2024 - Allotments", 
-                   "Congratulations! You have been allotted with the following project:\n" +
-                    f"{ existing_project.project_title }\n" +
-                    f"{ existing_project.sdg }\n" +
-                    f"{ existing_project.description }\n" +
-                    f"Faculty Name: { existing_project.faculty_name }\n" +
-                    f"Department: { existing_project.department }\n" +
-                    f"Email: { existing_project.college_email }\n" +
-                    f"Ph. No: { existing_project.mobile_number }\n" \
+        send_email(
+            "praneshkumar2210773@ssn.edu.in",
+            "Shape 2024 - Allotments",
+            "Congratulations! You have been allotted with the following project:\n"
+            + f"{ existing_project.project_title }\n"
+            + f"{ existing_project.sdg }\n"
+            + f"{ existing_project.description }\n"
+            + f"Faculty Name: { existing_project.faculty_name }\n"
+            + f"Department: { existing_project.department }\n"
+            + f"Email: { existing_project.college_email }\n"
+            + f"Ph. No: { existing_project.mobile_number }\n",
         )
 
         return HttpResponse("OK", status=200)
@@ -231,8 +233,10 @@ def view_selected_project(request):
 
     return render(request, "result.html", {"project": project})
 
+
 def admin_home(request):
     return render(request, "download_csv.html")
+
 
 def logout(request):
     request.session.clear()
@@ -252,26 +256,51 @@ def pick_sdg_wise(lists):
                 lst.remove(select)
     return final_selection
 
+
 class AllotmentsDownloadView(View):
     def get(self, request):
-
         file = "allotments.csv"
 
         allotted_projects = AssignedProjects.objects.all()
 
-        with open(file, "w", newline='', encoding='utf-8') as f:
-
+        with open(file, "w", newline="", encoding="utf-8") as f:
             writer = csv.writer(f)
 
-            writer.writerow(["user_id", "email", "allotted_project", "faculty_name", "department", "mobile_number", "email", "description", "sdg"])
+            writer.writerow(
+                [
+                    "user_id",
+                    "email",
+                    "allotted_project",
+                    "faculty_name",
+                    "department",
+                    "mobile_number",
+                    "email",
+                    "description",
+                    "sdg",
+                ]
+            )
 
             for allotted_project in allotted_projects:
-                project = Projects.objects.get(project_id = allotted_project.project.project_id)
+                project = Projects.objects.get(
+                    project_id=allotted_project.project.project_id
+                )
 
-                user = Users.objects.get(user_id = allotted_project.user.user_id)
+                user = Users.objects.get(user_id=allotted_project.user.user_id)
 
-                writer.writerow([user.user_id, user.email, project.project_title, project.faculty_name, project.department, project.mobile_number, project.college_email, project.description, project.sdg])
-        
+                writer.writerow(
+                    [
+                        user.user_id,
+                        user.email,
+                        project.project_title,
+                        project.faculty_name,
+                        project.department,
+                        project.mobile_number,
+                        project.college_email,
+                        project.description,
+                        project.sdg,
+                    ]
+                )
+
         f.close()
 
         file_object = open(file, "rb")
@@ -281,7 +310,8 @@ class AllotmentsDownloadView(View):
         response["Content-Disposition"] = f'attachment; filename="allotments.csv"'
 
         return response
-            
+
+
 def get_all_availabilities(request):
     projects = Projects.objects.all()
 
@@ -289,5 +319,5 @@ def get_all_availabilities(request):
 
     for project in projects:
         projects_availability[project.project_id] = project.availability
-    
+
     return JsonResponse(projects_availability)

@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,12 +21,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-f_d2)p+3t=e6u0@)s&$-s_kz5&q90r@ajd*mf722j^lw*o=ja$"
+SECRET_KEY = os.environ["SECRET_KEY"]
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = [os.environ["WEBSITE_HOSTNAME"]]
 
 
 # Application definition
@@ -43,6 +44,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -78,15 +80,25 @@ WSGI_APPLICATION = "shape2024.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+DATABASE_NAME = os.environ["DATABASE_NAME"]
+DATABASE_USER = os.environ["DATABASE_USER"]
+DATABASE_PASSWORD = os.environ["DATABASE_PASSWORD"]
+
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": "shape24",
-        "USER": "root",
-        "HOST": "localhost",
-        "PORT": 3306,
-        "PASSWORD": "Test-Database4Me",
-    }
+        "ENGINE": "sql_server.pyodbc",
+        "NAME": DATABASE_NAME,
+        "USER": DATABASE_USER,
+        "PASSWORD": DATABASE_PASSWORD,
+        "HOST": "shape24.database.windows.net",
+        "PORT": "1433",
+        "OPTIONS": {
+            "driver": "ODBC Driver 18 for SQL Server",
+            "encrypt": "yes",
+            "trust_server_certificate": "no",
+            "connection_timeout": 30,
+        },
+    },
 }
 
 
@@ -126,7 +138,15 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+FROM_EMAIL = os.environ["FROM_EMAIL"]
+EMAIL_KEY = os.environ["EMAIL_KEY"]
+
+CSRF_TRUSTED_ORIGINS = ["https://" + os.environ["WEBSITE_HOSTNAME"]]
