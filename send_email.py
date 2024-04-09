@@ -1,11 +1,11 @@
 import smtplib
 from email.message import EmailMessage
-from django.conf import FROM_EMAIL, EMAIL_KEY
+from django.conf import settings
 
 
 def send_email(to, subject, content):
-    user = FROM_EMAIL
-    key = EMAIL_KEY
+    user = settings.FROM_EMAIL
+    key = settings.EMAIL_KEY
 
     msg = EmailMessage()
 
