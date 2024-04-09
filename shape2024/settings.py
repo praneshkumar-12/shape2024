@@ -26,7 +26,7 @@ SECRET_KEY = os.environ["SECRET_KEY"]
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = [os.environ["WEBSITE_HOSTNAME"], "169.254.129.3"]
+ALLOWED_HOSTS = [os.environ["WEBSITE_HOSTNAME"]]
 
 ADMINS = [("Debug", os.environ["FROM_EMAIL"])]
 
