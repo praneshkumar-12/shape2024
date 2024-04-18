@@ -220,6 +220,13 @@
             
             function confirmSelection(project_id) {
                 user_id = "{{ user_id }}";
+
+                confirm_button = document.getElementById("confirmButton-" + project_id);
+
+                confirm_button.disabled = true;
+                confirm_button.innerHTML = "Confirming..."
+                
+                setTimeout(function() {
             
                 $.ajaxSetup(
                     {
@@ -271,7 +278,9 @@
                         }
                     }
                 ) 
-            }
+
+            }, 1000)
+        }
             
             function sleep(ms) {
                 return new Promise(resolve => setTimeout(resolve, ms));
